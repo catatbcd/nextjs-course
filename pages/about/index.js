@@ -7,3 +7,4 @@ function AboutPage(){
 }
 
 export default AboutPage;
+//url: http://localhost:3000/about

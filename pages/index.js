@@ -7,3 +7,4 @@ function HomePage(){
 }
 
 export default HomePage;
+//url: http://localhost:3000/

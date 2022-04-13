@@ -7,3 +7,4 @@ function ListPage(){
 }
 
 export default ListPage;
+//url: http://localhost:3000/portfolio/list
