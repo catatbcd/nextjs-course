@@ -31,6 +31,10 @@ export async function getStaticProps(context){
 
     const product = data.products.find(product => product.id === productId);
 
+    if (!product){
+        return { notFound: true };
+    }
+
     return {
         props: {
             loadedProduct: product
@@ -47,7 +51,7 @@ export async function getStaticPaths(){
     const pahsWithParams = ids.map((id) => ({params:{pid: id}}));
     return {
         paths: pahsWithParams,
-        fallback: false // true para cuando se necesitan muchas paginas, escoje solo algunas para renderizar
+        fallback: true // true para cuando se necesitan muchas paginas, escoje solo algunas para renderizar
         //false cuando se asignan manualmente y 'blocking' automatico
     };
 
