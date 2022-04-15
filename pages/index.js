@@ -14,7 +14,8 @@ export async function getStaticProps() {
   return{
     props:{
       events:featuredEvents
-    }
+    },
+    revalidate: 1800 //se regenera cada hora y media
   }
 }
 export default HomePage; 
