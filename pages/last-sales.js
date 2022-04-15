@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import useSWR from 'swr';
 
-function LastSalesPage(){
-    const [sales, setSales]= useState();
+function LastSalesPage(props){
+    const [sales, setSales]= useState(props.sales);
     //const[isLoading, setIsLoading] = useState(false);
 
     const { data, error } = useSWR( 
         'https://nextjs-course-97b0b-default-rtdb.firebaseio.com/sales.json'
         );
-        console.log(data);
+        
     useEffect(() => {
         if(data) {
             const transformedSales = [];
@@ -64,5 +64,24 @@ function LastSalesPage(){
         ))}
     </ul>);
 }
+
+export async function getStaticProps() {
+    const response = await fetch(
+        'https://nextjs-course-97b0b-default-rtdb.firebaseio.com/sales.json'
+    );
+    const data = await response.json();
+  
+    const transformedSales = [];
+  
+    for (const key in data) {
+      transformedSales.push({
+        id: key,
+        username: data[key].username,
+        volume: data[key].volume,
+      });
+    }
+  
+    return { props: { sales: transformedSales } };
+  }
 
 export default LastSalesPage;
