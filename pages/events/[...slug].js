@@ -2,6 +2,7 @@ import {useRouter} from 'next/router';
 import { Fragment } from 'react';
 import EventList from '../../components/events/event-list';
 import ResultsTitle from '../../components/events/results-title';
+import ErrorAlert from '../../components/ui/error-alert';
 import Button from '../../components/ui/button';
 import { getFilteredEvents } from '../../dummy-data';
 
@@ -24,7 +25,7 @@ function FilteredEventsPage(){
     if(isNaN(numYear)||isNaN(numMonth)||numYear > 2030 || numYear < 2021 || numMonth < 1 || numMonth > 12){
         return(
             <Fragment>
-                <p>Invalid filter. Please adjust your values!</p>
+                <ErrorAlert>Invalid filter. Please adjust your values!</ErrorAlert>
                 <div className='center'>
                     <Button link='/events'>Show All Events</Button>
                 </div>
@@ -42,7 +43,7 @@ function FilteredEventsPage(){
     if(!filteredEvents || filteredEvents.length === 0){
         return(
         <Fragment>
-            <p>No events found for the chosen filter</p>
+            <ErrorAlert>No events found for the chosen filter</ErrorAlert>
             <div className='center'>
                 <Button link='/events'>Show All Events</Button>
             </div>
