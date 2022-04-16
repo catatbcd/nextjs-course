@@ -6,6 +6,7 @@ import ErrorAlert from '../../components/ui/error-alert';
 import Button from '../../components/ui/button';
 import { getFilteredEvents } from '../../helpers/api-util';
 import useSWR from 'swr';
+import Head from 'next/head';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -81,6 +82,10 @@ function FilteredEventsPage(props){
 
     return (
         <Fragment>
+            <Head>
+            <title>Eventos Filtrados</title>
+            <meta name="description" content={`Todos los eventos del ${numMonth}/${numYear}.`} />
+          </Head>
             <ResultsTitle date={date} />
            <EventList items={filteredEvents} />
         </Fragment>
