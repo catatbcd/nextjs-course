@@ -36,21 +36,41 @@ function FilteredEventsPage(props){
           }
 
       },[data])
-
+    
+      let pageHeadData = (
+        <Head>
+        <title>Eventos Filtrados</title>
+        <meta name="description" content={`Lista de eventos filtrados`} />
+      </Head>
+    
+      )
     //console.log(filterData);
     if(!loadedEvents){
-        return <p className='center'>Loading ...</p>
+        return (
+        <Fragment>
+            {pageHeadData}
+            <p className='center'>Loading ...</p>
+        </Fragment>); 
 
     }
     const filterYear = filterData[0];
     const filterMonth = filterData[1];
- // transformar datos a numeros
+// transformar datos a numeros
     const numYear = +filterYear;
     const numMonth = +filterMonth;
+
+    pageHeadData = (
+    <Head>
+    <title>Eventos Filtrados</title>
+    <meta name="description" content={`Todos los eventos del ${numMonth}/${numYear}.`} />
+  </Head>
+
+  )
 
     if(isNaN(numYear)||isNaN(numMonth)||numYear > 2030 || numYear < 2021 || numMonth < 1 || numMonth > 12){
         return(
             <Fragment>
+                {pageHeadData}
                 <ErrorAlert>Invalid filter. Please adjust your values!</ErrorAlert>
                 <div className='center'>
                     <Button link='/events'>Show All Events</Button>
@@ -70,6 +90,7 @@ function FilteredEventsPage(props){
     if(!filteredEvents || filteredEvents.length === 0){
         return(
         <Fragment>
+            {pageHeadData}
             <ErrorAlert>No events found for the chosen filter</ErrorAlert>
             <div className='center'>
                 <Button link='/events'>Show All Events</Button>
@@ -82,10 +103,7 @@ function FilteredEventsPage(props){
 
     return (
         <Fragment>
-            <Head>
-            <title>Eventos Filtrados</title>
-            <meta name="description" content={`Todos los eventos del ${numMonth}/${numYear}.`} />
-          </Head>
+            {pageHeadData}
             <ResultsTitle date={date} />
            <EventList items={filteredEvents} />
         </Fragment>
