@@ -21,6 +21,7 @@ function AllEventsPage(props){
             <title>Todos Los Eventos</title>
             <meta name="description" content="Find a lot of great events that allow you to envolve..." />
           </Head>
+         
             <EventsSearch onSearch={findEventHandler} />
             <EventList items={events}/>
         </Fragment>
