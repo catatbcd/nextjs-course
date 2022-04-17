@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import CommentList from "./comment-list";
 import NewComment from "./new-comment";
 import classes from "./comments.module.css";
-import NotificationContext from '../../store/notification-context';
+import NotificationContext from "../../store/notification-context";
 
 function Comments(props) {
   const { eventId } = props;
@@ -33,9 +33,10 @@ function Comments(props) {
   function addCommentHandler(commentData) {
     // send data to API
     notificationCtx.showNotification({
-      title: 'Enviando comentario...',
-      message: 'Su comentario se está almacenando actualmente en una base de datos.',
-      status: 'pending',
+      title: "Enviando comentario...",
+      message:
+        "Su comentario se está almacenando actualmente en una base de datos.",
+      status: "pending",
     });
     fetch("/api/comments/" + eventId, {
       method: "POST",
@@ -44,29 +45,29 @@ function Comments(props) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
 
-      return response.json().then((data) => {
-        throw new Error(data.message || 'Algo salió mal!');
+        return response.json().then((data) => {
+          throw new Error(data.message || "Algo salió mal!");
+        });
+      })
+      .then((data) => {
+        notificationCtx.showNotification({
+          title: "Exito!",
+          message: "Su comentario fue guardado!",
+          status: "success",
+        });
+      })
+      .catch((error) => {
+        notificationCtx.showNotification({
+          title: "Error!",
+          message: error.message || "Algo salió mal!",
+          status: "error",
+        });
       });
-    })
-    .then((data) => {
-      notificationCtx.showNotification({
-        title: 'Exito!',
-        message: 'Su comentario fue guardado!',
-        status: 'success',
-      });
-    })
-    .catch((error) => {
-      notificationCtx.showNotification({
-        title: 'Error!',
-        message: error.message || 'Algo salió mal!',
-        status: 'error',
-      });
-    });
   }
 
   return (
