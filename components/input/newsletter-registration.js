@@ -1,8 +1,11 @@
-import { useRef } from 'react';
-import classes from './newsletter-registration.module.css';
+import { useRef, useContext } from "react";
+import classes from "./newsletter-registration.module.css";
+import NotificationContext from "../../store/notification-context";
 
 function NewsletterRegistration() {
-    const emailInputRef= useRef();
+  const emailInputRef = useRef();
+  const notifictionCtx = useContext(NotificationContext);
+
   function registrationHandler(event) {
     event.preventDefault();
 
@@ -12,14 +15,41 @@ function NewsletterRegistration() {
 
     const enteredEmail = emailInputRef.current.value;
 
-    fetch('/api/newsletter',{
-        method: 'POST',
-        body: JSON.stringify({ email: enteredEmail }),
-        headers:{
-            'Content-Type': 'application/json',
+    notifictionCtx.showNotification({
+      title: "Registrandose...",
+      message: "Registrarse para el boletín.",
+      status: "pending",
+    });
+
+    fetch("/api/newsletter", {
+      method: "POST",
+      body: JSON.stringify({ email: enteredEmail }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
-    }).then(response => response.json())
-    .then(data => console.log(data))
+        return response.json().then((data) => {
+          throw new Error(data.message || "Algo salió mal!");
+        });
+      })
+      .then((data) => {
+        notifictionCtx.showNotification({
+          title: "Éxito!",
+          message: "Registrado con éxito para el boletín de noticias!",
+          status: "success",
+        });
+      })
+      .catch((error) => {
+        notifictionCtx.showNotification({
+          title: "Error!",
+          message: error.message || "¡Algo salió mal!",
+          status: "error",
+        });
+      });
   }
 
   return (
@@ -28,10 +58,10 @@ function NewsletterRegistration() {
       <form onSubmit={registrationHandler}>
         <div className={classes.control}>
           <input
-            type='email'
-            id='email'
-            placeholder='Your email'
-            aria-label='Your email'
+            type="email"
+            id="email"
+            placeholder="Your email"
+            aria-label="Your email"
             ref={emailInputRef}
           />
           <button>Register</button>
