@@ -1,10 +1,18 @@
-import { MongoClient } from "mongodb";
+import {
+  connectDatabase,
+  insertDocument,
+  getAllDocuments,
+} from "../../../helpers/db-util";
 
 async function handler(req, res) {
-  const client = await MongoClient.connect(
-    "mongodb+srv://catat:vbq0U3LBYHi3iAr5@cluster0.nhdmh.mongodb.net/events?retryWrites=true&w=majority"
-  );
   const eventId = req.query.eventId;
+  let client;
+  try {
+    client = await connectDatabase();
+  } catch (error) {
+    res.status(500).json({ message: "conexion a la base de datos fallida." });
+    return;
+  }
 
   if (req.method === "POST") {
     //agregar validaciones del lado del servidor
@@ -18,6 +26,7 @@ async function handler(req, res) {
       text.trim() === ""
     ) {
       res.status(422).json({ message: "Entrada invalida." });
+      client.close();
       return;
     }
 
@@ -27,23 +36,27 @@ async function handler(req, res) {
       text,
       eventId,
     };
-    const db = client.db();
-    const result = await db.collection("comments").insertOne({ newComment });
+    let result;
+    try {
+      result = await insertDocument(client, "comments", newComment);
+      newComment._id = result.insertedId;
+      res
+        .status(201)
+        .json({ message: "Comentario agregado.", comment: newComment });
+    } catch (error) {
+      res.status(500).json({ message: "Inserción de datos fallida." });
+    }
 
     console.log(result);
-
-    newComment.id = result.insertedId;
-    res
-      .status(201)
-      .json({ message: "Comentario agregado.", comment: newComment });
   }
 
   if (req.method === "GET") {
-    const dummyList = [
-      { id: "c1", name: "Max", text: "Primer comentario" },
-      { id: "c2", name: "Manuel", text: "Segundo comentario!" },
-    ];
-    res.status(200).json({ comments: dummyList });
+    try {
+    const documents = await getAllDocuments(client, "comments", { _id: -1 });
+      res.status(200).json({ comments: documents });
+    } catch {
+      res.status(500).json({ message: " Error al obtener comentarios." });
+    }
   }
   client.close();
 }
