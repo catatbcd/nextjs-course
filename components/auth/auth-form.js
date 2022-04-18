@@ -44,6 +44,9 @@ function AuthForm() {
       });
 
       console.log(result);
+      if (!result.error) {
+        // set some auth state
+      }
       // log user in
     } else {
       try {
